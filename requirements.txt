@@ -8,3 +8,4 @@ Pillow
 numpy
 joblib
 xgboost
+sklearn
