@@ -334,12 +334,10 @@ else:
                     # Last Price Info
                     last_row = result.get('last_row', None)
                     if last_row is not None:
-                        change_pct = ((last_row['Close'] - last_row['Open']) / last_row['Open']) * 100
                         st.markdown(f"""
                         <div style="background-color:#1f2937; padding:15px; border-radius:8px; margin-top:15px;">
                             <strong>Last Open:</strong> ${last_row['Open']:.2f}<br>
                             <strong>Last Close:</strong> ${last_row['Close']:.2f}<br>
-                            <strong>Daily Change:</strong> {change_pct:+.2f}%
                         </div>
                         """, unsafe_allow_html=True)
                     
