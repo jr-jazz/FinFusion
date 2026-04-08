@@ -1,1 +1,1 @@
-pip install yfinance pandas numpy matplotlib mplfinance scikit-learn pillow tqdm torch torchvision torchaudio transformers streamlit captum lime xgboost joblib
+yfinance pandas numpy matplotlib mplfinance scikit-learn pillow tqdm torch torchvision torchaudio transformers streamlit captum lime xgboost joblib
