@@ -20,7 +20,6 @@ st.markdown("**Advanced Multimodal NVDA Stock Predictor** | Live • Vision + Se
 
 st.divider()
 
-# ====================== LOAD MODELS ======================
 @st.cache_resource
 def load_models():
     feature_scaler = joblib.load("models/feature_scaler.pkl")
@@ -60,9 +59,6 @@ feature_scaler, target_scaler, model, xgb_model, finbert, processor, vit_model, 
 LOOKBACK = 60
 TEMP_DIR = "temp_charts"
 os.makedirs(TEMP_DIR, exist_ok=True)
-
-# ====================== FIXED HELPER FUNCTIONS ======================
-# ====================== FIXED HELPER FUNCTIONS ======================
 
 def get_live_data(target_date_str):
     target_date = pd.to_datetime(target_date_str).tz_localize(None)
@@ -154,64 +150,6 @@ def extract_vit_features(image_path):
         vit_embedding = outputs.last_hidden_state[:, 0, :].squeeze(0).cpu().numpy()
     return vit_embedding, None
 
-def get_vit_attention_heatmap(image_path):
-    try:
-        image = Image.open(image_path).convert("RGB")
-        inputs = processor(images=image, return_tensors="pt").to(device)
-        
-        with torch.no_grad():
-            outputs = vit_model(**inputs, output_attentions=True)
-        
-        # Safe handling for different output types
-        if hasattr(outputs, 'attentions') and outputs.attentions is not None:
-            # outputs.attentions can sometimes be a tuple
-            if isinstance(outputs.attentions, tuple):
-                attentions = outputs.attentions[-1]   # Last layer
-            else:
-                attentions = outputs.attentions[-1]
-            
-            # Average over attention heads
-            attention = attentions.mean(dim=1)[0]
-            
-            # Remove CLS token and reshape to 14x14
-            cls_attention = attention[0, 1:].reshape(14, 14).cpu().numpy()
-            
-            # Normalize
-            cls_attention = (cls_attention - cls_attention.min()) / (cls_attention.max() - cls_attention.min() + 1e-8)
-            
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 5))
-            ax1.imshow(image)
-            ax1.set_title("Candlestick Chart")
-            ax1.axis('off')
-            
-            ax2.imshow(image)
-            ax2.imshow(cls_attention, cmap='jet', alpha=0.65)
-            ax2.set_title("ViT Attention Heatmap")
-            ax2.axis('off')
-            plt.tight_layout()
-            return fig
-        
-        else:
-            # Fallback if no attentions
-            fig, ax = plt.subplots(figsize=(6, 4))
-            ax.imshow(image)
-            ax.set_title("ViT Attention Heatmap\n(Model did not return attentions)")
-            ax.axis('off')
-            plt.tight_layout()
-            return fig
-            
-    except Exception as e:
-        # Ultimate fallback
-        fig, ax = plt.subplots(figsize=(6, 4))
-        try:
-            image = Image.open(image_path).convert("RGB")
-            ax.imshow(image)
-        except:
-            ax.imshow(np.zeros((224, 224, 3), dtype=np.uint8))
-        ax.set_title("ViT Attention Heatmap\n(Error - Using Fallback)")
-        ax.axis('off')
-        plt.tight_layout()
-        return fig
 
 def explain_prediction(last_row, predicted_direction, confidence, xgb_model, features):
     importance = xgb_model.feature_importances_
@@ -241,7 +179,6 @@ def explain_prediction(last_row, predicted_direction, confidence, xgb_model, fea
     
     return "\n".join(explanation)
 
-# ====================== LIVE PREDICT ======================
 def live_predict(target_date_str):
     with st.spinner("Analyzing market..."):
         data = get_live_data(target_date_str)
@@ -264,24 +201,21 @@ def live_predict(target_date_str):
         
         with torch.no_grad():
             reg_out, class_out = model(input_tensor)
-            prob = class_out.item()                    # raw probability from model
+            prob = class_out.item()                 
             
             prediction = "UP" if prob > 0.5 else "DOWN"
             
-            # Honest calibrated confidence (based on actual model performance)
+            # Honest calibrated confidence 
             distance = abs(prob - 0.5)
             confidence = round(distance * 2 * 100, 1)   # scale to percentage
             
-            # Realistic cap - your model only achieved ~54% accuracy in training
+            # Realistic cap - your model only achieved ~54% accuracy in trainin
             confidence = min(confidence, 65.0)
-            confidence = max(confidence, 51.0)          # minimum realistic value
+            confidence = max(confidence, 51.0)        
         
         last_row = recent.iloc[-1]
         explanation = explain_prediction(last_row, 1 if prediction == "UP" else 0, confidence, xgb_model, features)
-        
-        # Get heatmap safely
-        heatmap_fig = get_vit_attention_heatmap(image_path)
-        
+            
         # Main chart
         fig = plt.figure(figsize=(10, 6))
         ax = fig.add_subplot(111)
@@ -293,7 +227,6 @@ def live_predict(target_date_str):
             "confidence": confidence,
             "explanation": explanation,
             "chart": fig,
-            "heatmap": heatmap_fig,
             "date": target_date_str,
             "last_row": last_row,
             "features": features
@@ -348,7 +281,7 @@ if st.session_state.page == "home":
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("🚀 Start Live Prediction", type="primary", use_container_width=True):
+    if st.button("Start Live Prediction", type="primary", use_container_width=True):
         st.session_state.page = "predict"
         st.rerun()
 
@@ -410,7 +343,7 @@ else:
                         </div>
                         """, unsafe_allow_html=True)
                     
-                    # BIG FINAL REASONING (Exactly where you marked)
+                    # BIG FINAL REASONING 
                     st.markdown("**Final Reasoning**")
                     reasoning_text = "Bullish signals dominate" if result['prediction'] == "UP" else "Bearish signals dominate"
                     st.markdown(f"""
