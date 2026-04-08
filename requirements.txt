@@ -9,3 +9,6 @@ numpy
 joblib
 xgboost
 scikit-learn
+torchvision
+torchaudio
+captum
