@@ -1,1 +1,10 @@
-yfinance pandas numpy matplotlib mplfinance scikit-learn pillow tqdm torch torchvision torchaudio transformers streamlit captum lime xgboost joblib
+streamlit
+pandas
+torch
+transformers
+yfinance
+mplfinance
+Pillow
+numpy
+joblib
+xgboost
