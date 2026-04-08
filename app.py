@@ -11,7 +11,7 @@ import os
 from datetime import datetime, timedelta
 from PIL import Image
 
-from transformers import AutoImageProcessor, ViTModel, pipeline
+from transformers import ViTImageProcessor, ViTModel, pipeline
 
 st.set_page_config(page_title="FinFusion - NVDA Predictor", layout="wide", page_icon="📈")
 
@@ -47,7 +47,7 @@ def load_models():
     xgb_model = joblib.load("models/xgboost_model.pkl")
     finbert = pipeline("sentiment-analysis", model="ProsusAI/finbert", device=-1)
     
-    processor = AutoImageProcessor.from_pretrained('google/vit-base-patch16-224')
+    processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224')
     vit_model = ViTModel.from_pretrained('google/vit-base-patch16-224')
     vit_model.eval()
     device = torch.device("cpu")
