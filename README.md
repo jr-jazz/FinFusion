@@ -50,15 +50,10 @@ FinFusion/
 ├── data/                       # Notebooks and processed data
 └── temp_charts/                # Temporary candlestick images
 
-## How to Run Locally
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/jr-jazz/FinFusion.git
-   cd FinFusion
-
-Install dependencies:Bashpip install -r requirements.txt
-Run the Streamlit application:Bashstreamlit run app.py
+## How to Run 
+The web application is deployed on streamlit community server.
+Copy the weblink to the browser to run the application.
+https://finfusion-stock-market-predictor.streamlit.app/
 
 Model Performance
 The multimodal LSTM model achieved approximately 54% directional accuracy during training and validation. Feature importance analysis shows meaningful contributions from technical indicators and ViT-derived chart patterns.
