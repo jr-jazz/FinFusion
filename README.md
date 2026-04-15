@@ -39,16 +39,43 @@ The system employs a late fusion approach where features from different modaliti
 - Version Control: Git
 
 ## Repository Structure
+```
 FinFusion/
-├── app.py                      # Streamlit web application
-├── requirements.txt            # Python dependencies
-├── models/                     # Trained models and scalers
-│   ├── final_multimodal_fixed.pth
+├── app.py                      # Main Streamlit web application (entry point)
+├── requirements.txt            # List of all Python dependencies
+├── README.md                   # Project overview and how to run
+│
+├── data/                       # All notebooks, datasets and generated files 
+│   ├── candlestick_images/     # Candlestick Images pre-generated
+│   ├── temp_charts/            # Temporary candlestick images for live prediction
+│   ├── 01_data_collection.ipynb
+│   ├── 02_sentiment_analysis.ipynb
+│   ├── 03_lstm_baseline.ipynb
+│   ├── 04_vit_chart_branch.ipynb
+│   ├── 05_full_multimodel.ipynb
+│   ├── 06_training_full_multimodel.ipynb
+│   ├── 07_xgboost.ipynb
+│   ├── 08_abation_study.ipynb
+│   ├── Kaggle_finbert_validation_results.csv                   
+│   ├── Kaggle_finbert_validation.csv
+│   ├── nvda_complete_multimodel.csv                 #Final Dataset with Features
+│   ├── nvda_full_multimodel.csv              
+│   ├── nvda_news_sentiment.csv                      #News Sentiment from Kaggle
+│   ├── nvda_prices_sentiment_vit.csv
+│   ├── nvda_prices_with_sentiment.csv
+│   └── nvda_prices.csv                              #Fetched data from yfinance
+│
+├── models/                            # Trained models and scalers
+│   ├── final_multimodal_fixed.pth     # Main LSTM model
 │   ├── feature_scaler.pkl
 │   ├── target_scaler.pkl
-│   └── xgboost_model.pkl
-├── data/                       # Notebooks and processed data
-└── temp_charts/                # Temporary candlestick images
+│   └── xgboost_model.pkl              # For explainability
+│
+├── src/
+│
+└── temp_charts/                # Generated candlestick images during runtime 
+
+```
 
 ## How to Run 
 The web application is deployed on streamlit community server.
